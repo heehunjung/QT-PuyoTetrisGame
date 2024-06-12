@@ -112,8 +112,8 @@ int PuyopuyoGame::puyopuyoMove(PointPuyopuyo* p1, PointPuyopuyo* p2, int xPlus, 
             axis_col = 2;
             delete p1;
             delete p2;
-            p1 = new PointPuyopuyo(axis_col, axis_row);
-            p2 = new PointPuyopuyo(axis_col, axis_row - 1);
+            this->p1 = new PointPuyopuyo(axis_col, axis_row);
+            this->p2 = new PointPuyopuyo(axis_col, axis_row - 1);
             return 0;
         }
     }
@@ -133,8 +133,8 @@ int PuyopuyoGame::puyopuyoMove(PointPuyopuyo* p1, PointPuyopuyo* p2, int xPlus, 
         axis_col = 2;
         delete p1;
         delete p2;
-        p1 = new PointPuyopuyo(axis_col, axis_row);
-        p2 = new PointPuyopuyo(axis_col, axis_row - 1);
+        this->p1 = new PointPuyopuyo(axis_col, axis_row);
+        this->p2 = new PointPuyopuyo(axis_col, axis_row - 1);
         return 0;
     }
     else if (COL == p2->x || COL == p1->x)

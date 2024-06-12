@@ -282,7 +282,8 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
     }
     case Qt::Key_Left:
     {
-        if(p_game->getPoint1()->x == 0 || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x-1] < 0
+        if(p_game->getPoint1()->x == 0 || p_game->getPoint2()->x == 0
+            || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x-1] < 0
             || p_game->boardInt[p_game->getPoint2()->y][p_game->getPoint2()->x-1] < 0 )
         {break;}
         int result;
@@ -301,7 +302,8 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
     }
     case Qt::Key_Right:
     {
-        if(p_game->getPoint1()->x == p_game->COL-1 || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x+1] < 0
+        if(p_game->getPoint1()->x == p_game->COL-1 || p_game->getPoint2()->x == p_game->COL-1
+            || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x+1] < 0
             || p_game->boardInt[p_game->getPoint2()->y][p_game->getPoint2()->x+1] < 0)
         {break;}
         int result;
@@ -324,6 +326,28 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Z:
     {
+        // int tempX = p2->x - pivot.x;
+        // int tempY = p2->y - pivot.y;
+        // p2->x = pivot.x - tempY;
+        // p2->y = pivot.y + tempX;
+        // int x= p_game->
+        // // ㅁ 모양의 오른쪽 꼭지점 좌표(p3)를 계산
+        // PointPuyopuyo p3(p2->x, p2->y);
+        // if (p1->x == p2->x) {
+        //     // p1과 p2가 세로로 위치할 때
+        //     if (p1->y > p2->y) {
+        //         p3.x++;
+        //     } else {
+        //         p3.x--;
+        //     }
+        // } else {
+        //     // p1과 p2가 가로로 위치할 때
+        //     if (p1->x > p2->x) {
+        //         p3.y--;
+        //     } else {
+        //         p3.y++;
+        //     }
+        // }
         p_game->puyopuyoXZ(p_game->getPoint1(),p_game->getPoint2(),1);
         update();
         break;
