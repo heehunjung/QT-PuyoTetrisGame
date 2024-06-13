@@ -35,8 +35,11 @@ int PuyopuyoGame::puyopuyoMove(PointPuyopuyo* p1, PointPuyopuyo* p2, int xPlus, 
     // 기존 위치 초기화
     if ((xPlus != 0 || yPlus != 0) && isLast == false )
     {
-        board[p1->y][p1->x] = "White";
-        board[p2->y][p2->x] = "White";
+        if( p2->y <2)  board[p2->y][p2->x] = "Gray";
+        else board[p2->y][p2->x] = "White";
+
+        if(p1->y < 2 ) board[p1->y][p1->x] = "Gray";
+        else board[p1->y][p1->x] = "White";
         boardInt[p1->y][p1->x] = 0;
         boardInt[p2->y][p2->x] = 0;
     }
@@ -172,7 +175,7 @@ void PuyopuyoGame::puyopuyoXZ(PointPuyopuyo* p1, PointPuyopuyo* p2, int check)
     {
         rotateCounterClockwise(p1, p2, pivot);
     }
-    else
+    else //x 축 회줜
     {
         rotateClockwise(p1, p2, pivot);
 
@@ -182,7 +185,11 @@ void PuyopuyoGame::puyopuyoXZ(PointPuyopuyo* p1, PointPuyopuyo* p2, int check)
         board[p2->y][p2->x] = block2->color;
         boardInt[p2->y][p2->x] = block2->value;
     }
-
+    if (p1->y == ROW + 1 || p2->y == ROW + 1
+        || boardInt[p1->y+1][p1->x] < 0 || boardInt[p2->y+1][p2->x] < 0)
+    {
+        isLast = true;
+    }
 }
 
 PuyopuyoGame::PuyopuyoGame() : Game(12, 6, 2)

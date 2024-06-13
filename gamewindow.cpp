@@ -326,39 +326,97 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Z:
     {
-        // int tempX = p2->x - pivot.x;
-        // int tempY = p2->y - pivot.y;
-        // p2->x = pivot.x - tempY;
-        // p2->y = pivot.y + tempX;
-        // int x= p_game->
-        // // ㅁ 모양의 오른쪽 꼭지점 좌표(p3)를 계산
-        // PointPuyopuyo p3(p2->x, p2->y);
-        // if (p1->x == p2->x) {
-        //     // p1과 p2가 세로로 위치할 때
-        //     if (p1->y > p2->y) {
-        //         p3.x++;
-        //     } else {
-        //         p3.x--;
-        //     }
-        // } else {
-        //     // p1과 p2가 가로로 위치할 때
-        //     if (p1->x > p2->x) {
-        //         p3.y--;
-        //     } else {
-        //         p3.y++;
-        //     }
-        // }
-        p_game->puyopuyoXZ(p_game->getPoint1(),p_game->getPoint2(),1);
+        PointPuyopuyo tempP1 = *p_game->getPoint1();
+        PointPuyopuyo tempP2 = *p_game->getPoint2();
+
+        // 반시계 방향 회전
+        int tempX = tempP2.x - tempP1.x;
+        int tempY = tempP2.y - tempP1.y;
+        tempP2.x = tempP1.x + tempY;
+        tempP2.y = tempP1.y - tempX;
+
+        PointPuyopuyo p3(tempP2.x, tempP2.y);
+        if (tempP1.x == tempP2.x) {
+            // tempP1과 tempP2가 세로로 위치할 때
+            if (tempP1.y > tempP2.y) {
+                p3.x++;
+            } else {
+                p3.x--;
+            }
+        } else {
+            // tempP1과 tempP2가 가로로 위치할 때
+            if (tempP1.x > tempP2.x) {
+                p3.y--;
+            } else {
+                p3.y++;
+            }
+        }
+
+        if (tempP2.x > p_game->COL-1 || tempP2.x < 0
+            || tempP2.y > p_game->ROW+1 || tempP2.y < 0
+            || p3.x > p_game->COL-1 || p3.x < 0
+            || p3.y > p_game->ROW+1 || p3.y < 0
+            || p_game->boardInt[tempP2.y][tempP2.x] < 0
+            || p_game->boardInt[p3.y][p3.x] < 0)
+        {
+            if( p_game->boardInt[tempP2.y][tempP2.x] < 0
+                || p_game->boardInt[p3.y][p3.x] < 0)
+                p_game->isLast = true;
+            break;
+        }
+
+        p_game->puyopuyoXZ(p_game->getPoint1(), p_game->getPoint2(), 1);
         update();
         break;
     }
     case Qt::Key_X:
-        p_game->puyopuyoXZ(p_game->getPoint1(),p_game->getPoint2(),0);
+    {
+        PointPuyopuyo tempP1 = *p_game->getPoint1();
+        PointPuyopuyo tempP2 = *p_game->getPoint2();
+        int tempX = tempP2.x - tempP1.x;
+        int tempY = tempP2.y - tempP1.y;
+        tempP2.x = tempP1.x - tempY;
+        tempP2.y = tempP1.y + tempX;
+
+        PointPuyopuyo p3(tempP2.x, tempP2.y);
+        if (tempP1.x == tempP2.x) {
+            // tempP1과 tempP2가 세로로 위치할 때
+            if (tempP1.y > tempP2.y) {
+                p3.x--;
+            } else {
+                p3.x++;
+            }
+        } else {
+            // tempP1과 tempP2가 가로로 위치할 때
+            if (tempP1.x > tempP2.x) {
+                p3.y++;
+            } else {
+                p3.y--;
+            }
+        }
+
+        if (tempP2.x > p_game->COL-1 || tempP2.x < 0
+            || tempP2.y > p_game->ROW+1 || tempP2.y < 0
+            || p3.x > p_game->COL-1 || p3.x < 0
+            || p3.y > p_game->ROW+1 || p3.y < 0
+            || p_game->boardInt[tempP2.y][tempP2.x] < 0
+            || p_game->boardInt[p3.y][p3.x] < 0)
+        {
+            if( p_game->boardInt[tempP2.y][tempP2.x] < 0
+                || p_game->boardInt[p3.y][p3.x] < 0)
+                p_game->isLast = true;
+            break;
+        }
+
+        p_game->puyopuyoXZ(p_game->getPoint1(), p_game->getPoint2(), 0);
         update();
         break;
+    }
+
     default:
         break;
     }
+
 }
 
 void GameWindow::timerEvent(QTimerEvent* event)
