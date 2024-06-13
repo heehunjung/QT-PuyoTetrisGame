@@ -3,6 +3,7 @@
 #include "puyopuyo.h"
 #include <string>
 #include <QDebug>
+#include <queue>
 
 using namespace std;
 class Game
@@ -29,9 +30,10 @@ public:
     int** boardInt;
 
     virtual int puyopuyoMove(PointPuyopuyo*, PointPuyopuyo*, int, int){};
-    virtual void puyopuyoXZ(PointPuyopuyo*, PointPuyopuyo*, int){};
+    virtual void puyopuyoXZ(PointPuyopuyo*, PointPuyopuyo*, int){;};
     virtual PointPuyopuyo* getPoint1(){};
     virtual PointPuyopuyo* getPoint2(){};
+    virtual void bfs(){;};
     void rotateClockwise(PointPuyopuyo* p1, PointPuyopuyo* p2, PointPuyopuyo pivot) {
         // 중심(pivot)을 기준으로 시계방향 회전
         int tempX = p2->x - pivot.x;
@@ -39,7 +41,6 @@ public:
         p2->x = pivot.x - tempY;
         p2->y = pivot.y + tempX;
     }
-
     void rotateCounterClockwise(PointPuyopuyo* p1, PointPuyopuyo* p2, PointPuyopuyo pivot) {
         // 중심(pivot)을 기준으로 시계 반대 방향 회전
         int tempX = p2->x - pivot.x;
@@ -47,6 +48,7 @@ public:
         p2->x = pivot.x + tempY;
         p2->y = pivot.y - tempX;
     }
+    virtual int gravity(){};
 };
 
 class PuyopuyoGame : public Game
@@ -56,8 +58,10 @@ public:
     PointPuyopuyo *p2;
     virtual int puyopuyoMove(PointPuyopuyo*,PointPuyopuyo*,int,int);
     virtual void puyopuyoXZ(PointPuyopuyo*, PointPuyopuyo*, int);
+    virtual int gravity();
     virtual PointPuyopuyo* getPoint1(){return p1;}
     virtual PointPuyopuyo* getPoint2(){return p2;}
+    virtual void bfs();
     PuyopuyoGame();
     ~PuyopuyoGame();
 };

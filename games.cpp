@@ -150,6 +150,7 @@ int PuyopuyoGame::puyopuyoMove(PointPuyopuyo* p1, PointPuyopuyo* p2, int xPlus, 
     delete block2;
     return -1;
 }
+
 void PuyopuyoGame::puyopuyoXZ(PointPuyopuyo* p1, PointPuyopuyo* p2, int check)
 {
 
@@ -192,6 +193,98 @@ void PuyopuyoGame::puyopuyoXZ(PointPuyopuyo* p1, PointPuyopuyo* p2, int check)
     }
 }
 
+void PuyopuyoGame::bfs() {
+    // 방문 확인용 2차원 배열
+    int **visited = new int*[ROW+2];
+    // 삭제할 위치 저장하는 2차원 배열
+    int **deletePoint = new int*[ROW+2];
+    for(int i = 0; i < ROW+2; i++) {
+        deletePoint[i] = new int[COL]();
+        visited[i] = new int[COL]();
+    }
+
+    // 상하좌우 x축 및 y축 방향
+    int x_dir[4] = {1, -1, 0, 0};
+    int y_dir[4] = {0, 0, -1, 1};
+
+    // 전체 보드를 탐색
+    for(int start_y = 0; start_y < ROW+2; start_y++) {
+        for(int start_x = 0; start_x < COL; start_x++) {
+            if(boardInt[start_y][start_x] < 0 && !visited[start_y][start_x]) {
+                // 탐색 좌표 저장용 큐
+                queue<pair<int, int>> q;
+                vector<pair<int, int>> group; // 그룹을 저장할 벡터
+                q.push(make_pair(start_x, start_y));     // 큐에 삽입
+
+                int currentValue = boardInt[start_y][start_x];
+
+                while(!q.empty()) {
+                    int x = q.front().first;
+                    int y = q.front().second;
+                    q.pop();
+
+                    if(visited[y][x]) continue;
+
+                    visited[y][x] = 1;
+                    group.push_back(make_pair(x, y));
+
+                    for(int i = 0; i < 4; ++i) {
+                        // 현재 좌표와 상하좌우로 인접한 좌표
+                        int x_new = x + x_dir[i];
+                        int y_new = y + y_dir[i];
+                        if(x_new >= 0 && x_new < COL && y_new >= 0 && y_new < ROW+2) {
+                            if(!visited[y_new][x_new] && boardInt[y_new][x_new] == currentValue) {
+                                q.push(make_pair(x_new, y_new));  // 인접 좌표를 큐에 삽입
+                            }
+                        }
+                    }
+                }
+
+                // 그룹 크기가 4개 이상이면 삭제 처리
+                if(group.size() >= 4) {
+                    for(auto &point : group) {
+                        deletePoint[point.second][point.first] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    // deletePoint 배열에 따라 보드 업데이트
+    for(int i = 0; i < ROW+2; i++) {
+        for(int k = 0; k < COL; k++) {
+            if(deletePoint[i][k] == 1) {
+                board[i][k] = "White";
+                boardInt[i][k] = 0;
+            }
+        }
+    }
+}
+
+int PuyopuyoGame::gravity() {
+    bool moved = false;  // 뿌요가 이동했는지 추적
+
+    for (int col = 0; col < COL; col++) {
+        for (int row = ROW; row >= 0; row--) {
+            if (boardInt[row][col] < 0) {
+                // 한 칸 아래로 이동할 수 있으면 이동
+                if (row + 1 <= ROW + 1 && boardInt[row + 1][col] == 0) {
+                    board[row + 1][col] = board[row][col];
+                    boardInt[row + 1][col] = boardInt[row][col];
+                    board[row][col] = "White";
+                    boardInt[row][col] = 0;
+                    moved = true;  // 이동이 발생했음을 기록
+                }
+            }
+        }
+    }
+
+    // 이동이 발생하지 않았으면 1을 반환
+    if (!moved) {
+        return 1;
+    }
+    return 0;
+}
 PuyopuyoGame::PuyopuyoGame() : Game(12, 6, 2)
 {
     // Initialize random seed

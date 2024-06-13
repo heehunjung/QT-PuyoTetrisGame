@@ -1,6 +1,9 @@
 #ifndef PUYOPUYO_H
 #define PUYOPUYO_H
 #include <string>
+
+using namespace std;
+
 class Board
 {
 public:
@@ -34,14 +37,12 @@ public:
     Blue() : Board("Blue", 4, -4) {}
 };
 class Purple:public Board
-
 {
 public:
     // Constructor for Red that initializes the Board base class
     Purple() : Board("Purple", 5, -5) {}
 };
-class Point
-{
+class Point{
 public:
     int x;
     int y;
@@ -52,7 +53,6 @@ public:
         this->y = y;
     }
 };
-
 class PointPuyopuyo:public Point {
 public:
     PointPuyopuyo(): Point(0,0){};

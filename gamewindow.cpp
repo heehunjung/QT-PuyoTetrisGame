@@ -273,6 +273,9 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
         }
         else if(result == 0)
         {
+            update();
+            p_game->bfs();
+            update();
             drawNext();
             p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
         }
@@ -321,9 +324,11 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
         break;
     }
     case Qt::Key_Space:
+    {
         gameoverwindow = new GameoverWindow;
         gameoverwindow->show();
         break;
+    }
     case Qt::Key_Z:
     {
         PointPuyopuyo tempP1 = *p_game->getPoint1();
@@ -426,7 +431,27 @@ void GameWindow::timerEvent(QTimerEvent* event)
 
     if(event->timerId()==timer)
     {
-
+        // int result;
+        // result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,1);
+        // if (result == 1)
+        // {
+        //     p_game->axis_row++;
+        // }
+        // else if(result == 0)
+        // {
+        //     update();
+        //     p_game->bfs();
+        //     update();
+        //     drawNext();
+        //     p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+        // }
+        int check =p_game->gravity();
+        update();
+        if(check ==1)
+        {
+            p_game->bfs();
+            update();
+        }
     }
 }
 
