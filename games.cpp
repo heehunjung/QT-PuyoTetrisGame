@@ -111,12 +111,8 @@ int PuyopuyoGame::puyopuyoMove(PointPuyopuyo* p1, PointPuyopuyo* p2, int xPlus, 
                 boardInt[p2->y-1][p2->x] = block2->afterValue;
                 delete block2;
             }
-            axis_row = 1;
-            axis_col = 2;
             delete p1;
             delete p2;
-            this->p1 = new PointPuyopuyo(axis_col, axis_row);
-            this->p2 = new PointPuyopuyo(axis_col, axis_row - 1);
             return 0;
         }
     }
@@ -132,12 +128,8 @@ int PuyopuyoGame::puyopuyoMove(PointPuyopuyo* p1, PointPuyopuyo* p2, int xPlus, 
             boardInt[p2->y-1][p2->x] = block2->afterValue;
             delete block2;
         }
-        axis_row = 1;
-        axis_col = 2;
         delete p1;
         delete p2;
-        this->p1 = new PointPuyopuyo(axis_col, axis_row);
-        this->p2 = new PointPuyopuyo(axis_col, axis_row - 1);
         return 0;
     }
     else if (COL == p2->x || COL == p1->x)
@@ -146,11 +138,18 @@ int PuyopuyoGame::puyopuyoMove(PointPuyopuyo* p1, PointPuyopuyo* p2, int xPlus, 
         delete block2;
         return 3;
     }
+
     delete block1;
     delete block2;
     return -1;
 }
 
+void PuyopuyoGame::lastPang(){
+    axis_row = 1;
+    axis_col = 2;
+    this->p1 = new PointPuyopuyo(axis_col, axis_row);
+    this->p2 = new PointPuyopuyo(axis_col, axis_row - 1);
+}
 void PuyopuyoGame::puyopuyoXZ(PointPuyopuyo* p1, PointPuyopuyo* p2, int check)
 {
 
@@ -193,11 +192,12 @@ void PuyopuyoGame::puyopuyoXZ(PointPuyopuyo* p1, PointPuyopuyo* p2, int check)
     }
 }
 
-void PuyopuyoGame::bfs() {
+int PuyopuyoGame::bfs() {
     // 방문 확인용 2차원 배열
     int **visited = new int*[ROW+2];
     // 삭제할 위치 저장하는 2차원 배열
     int **deletePoint = new int*[ROW+2];
+    int check = 0;
     for(int i = 0; i < ROW+2; i++) {
         deletePoint[i] = new int[COL]();
         visited[i] = new int[COL]();
@@ -256,14 +256,17 @@ void PuyopuyoGame::bfs() {
             if(deletePoint[i][k] == 1) {
                 board[i][k] = "White";
                 boardInt[i][k] = 0;
+                check = 1;
+                bfsState = true;
             }
         }
     }
+    if(check == 1){return 1;}
+    else return 0;
 }
 
 int PuyopuyoGame::gravity() {
-    bool moved = false;  // 뿌요가 이동했는지 추적
-
+    moved=false;
     for (int col = 0; col < COL; col++) {
         for (int row = ROW; row >= 0; row--) {
             if (boardInt[row][col] < 0) {
@@ -279,11 +282,20 @@ int PuyopuyoGame::gravity() {
         }
     }
 
-    // 이동이 발생하지 않았으면 1을 반환
-    if (!moved) {
-        return 1;
+    // row가 0과 1일 때는 이동하지 않아도 1을 반환
+    for (int col = 0; col < COL; col++) {
+        if ((boardInt[0][col] > 0 || boardInt[1][col] > 0)) {
+            moved=false;
+            return 0;
+
+        }
     }
-    return 0;
+    if (moved) {
+        return 0;
+    }
+    else{
+    return 1;
+    }
 }
 PuyopuyoGame::PuyopuyoGame() : Game(12, 6, 2)
 {

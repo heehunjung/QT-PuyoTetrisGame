@@ -265,22 +265,32 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Down:
     {
-        int result;
-        result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,1);
-        if (result == 1)
+        if(p_game->moved==true)
         {
-            p_game->axis_row++;
+            p_game->gravity();
         }
-        else if(result == 0)
-        {
-            update();
-            p_game->bfs();
-            update();
-            drawNext();
-            p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+        else{
+            int result;
+            result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,1);
+            if (result == 1)
+            {
+                p_game->axis_row++;
+            }
+            else if(result == 0)
+            {
+                update();
+                int check = p_game->bfs();
+                p_game->lastPang();
+                if(check == 0 && !p_game->moved )
+                {
+                    p_game->bfsState=false;
+                    update();
+                    drawNext();
+                    p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                }
+            }
         }
         update();
-
         break;
     }
     case Qt::Key_Left:
@@ -431,26 +441,43 @@ void GameWindow::timerEvent(QTimerEvent* event)
 
     if(event->timerId()==timer)
     {
-        // int result;
-        // result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,1);
-        // if (result == 1)
-        // {
-        //     p_game->axis_row++;
-        // }
-        // else if(result == 0)
-        // {
-        //     update();
-        //     p_game->bfs();
-        //     update();
-        //     drawNext();
-        //     p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
-        // }
-        int check =p_game->gravity();
         update();
-        if(check ==1)
+        p_game->bfs();
+        if(p_game->bfsState)
         {
-            p_game->bfs();
+            int check =p_game->gravity();
             update();
+            if(check ==1)
+            {
+                p_game->bfsState=false;
+                p_game->bfs();
+                update();
+                p_game->lastPang();
+                update();
+                drawNext();
+                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+            }
+        }
+        else{
+            int result;
+            result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,1);
+            if (result == 1)
+            {
+                p_game->axis_row++;
+            }
+            else if(result == 0)
+            {
+                update();
+                int check = p_game->bfs();
+                p_game->lastPang();
+                if(check == 0 && !p_game->moved )
+                {
+                    p_game->bfsState=false;
+                    update();
+                    drawNext();
+                    p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                }
+            }
         }
     }
 }
@@ -529,51 +556,5 @@ void GameWindow::drawNext()
             }
         }
     }
-
-    // for (int i = 0; i < ROW+2; i++)
-    //     for (int j = 0; j < COL; j++)
-    //     {
-    //         if (GAMENAME == "Puyopuyo" || GAMENAME == "PuyopuyoTetris")
-    //         {
-    //             if(board[i][j] == "Red")
-    //             {
-    //                 board[i][j] = "Yellow";
-    //             }
-
-    //             else if(board[i][j] == "Yellow")
-    //             {
-    //                 board[i][j] = "Green";
-    //             }
-
-    //             else if(board[i][j] == "Green")
-    //             {
-    //                 board[i][j] = "Blue";
-    //             }
-
-    //             else if(board[i][j] == "Blue")
-    //             {
-    //                 board[i][j] = "Purple";
-    //             }
-
-    //             else if(board[i][j] == "Purple")
-    //             {
-    //                 board[i][j] = "Red";
-    //             }
-    //         }
-
-    //         if (GAMENAME == "Tetris" || GAMENAME == "PuyopuyoTetris")
-    //         {
-    //             if(board[i][j] == "White")
-    //             {
-    //                 board[i][j] = "Gray";
-    //             }
-
-    //             else if(board[i][j] == "Gray")
-    //             {
-    //                 board[i][j] = "White";
-    //             }
-    //         }
-    //     }
-
     (p_game->score)++;
 }

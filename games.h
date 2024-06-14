@@ -24,16 +24,16 @@ public:
 
     bool gameover;
     bool isLast;
-
+    bool bfsState;
     string** board;
     string* next;
     int** boardInt;
-
+    bool moved = false;  // 뿌요가 이동했는지 추적
     virtual int puyopuyoMove(PointPuyopuyo*, PointPuyopuyo*, int, int){};
     virtual void puyopuyoXZ(PointPuyopuyo*, PointPuyopuyo*, int){;};
     virtual PointPuyopuyo* getPoint1(){};
     virtual PointPuyopuyo* getPoint2(){};
-    virtual void bfs(){;};
+    virtual int bfs(){;};
     void rotateClockwise(PointPuyopuyo* p1, PointPuyopuyo* p2, PointPuyopuyo pivot) {
         // 중심(pivot)을 기준으로 시계방향 회전
         int tempX = p2->x - pivot.x;
@@ -49,6 +49,7 @@ public:
         p2->y = pivot.y - tempX;
     }
     virtual int gravity(){};
+    virtual void lastPang(){};
 };
 
 class PuyopuyoGame : public Game
@@ -61,7 +62,9 @@ public:
     virtual int gravity();
     virtual PointPuyopuyo* getPoint1(){return p1;}
     virtual PointPuyopuyo* getPoint2(){return p2;}
-    virtual void bfs();
+    virtual int bfs();
+    virtual void lastPang();
+
     PuyopuyoGame();
     ~PuyopuyoGame();
 };
