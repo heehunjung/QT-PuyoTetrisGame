@@ -576,6 +576,7 @@ Tutorial4_autogen/timestamp: \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/build/Desktop_Qt_6_7_1_MinGW_64_bit-Debug/CMakeFiles/3.27.7/CMakeRCCompiler.cmake \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/build/Desktop_Qt_6_7_1_MinGW_64_bit-Debug/CMakeFiles/3.27.7/CMakeSystem.cmake \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/build/Desktop_Qt_6_7_1_MinGW_64_bit-Debug/Tutorial4_autogen/moc_predefs.h \
+	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/element.h \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gameoverwindow.cpp \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gameoverwindow.h \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/games.cpp \
@@ -585,6 +586,5 @@ Tutorial4_autogen/timestamp: \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/main.cpp \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/mainwindow.cpp \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/mainwindow.h \
-	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/puyopuyo.h \
 	C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/mainwindow.ui \
 	C:/Qt/Tools/CMake_64/bin/cmake.exe

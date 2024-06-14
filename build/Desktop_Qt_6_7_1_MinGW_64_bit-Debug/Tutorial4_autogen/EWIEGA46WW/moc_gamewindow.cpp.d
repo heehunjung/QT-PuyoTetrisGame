@@ -403,4 +403,4 @@ C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/build/Desktop_Qt_6_7_1_MinGW_64_b
   C:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/wchar.h \
   C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/GameOverWindow.h \
   C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/Games.h \
-  C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/puyopuyo.h
+  C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/element.h

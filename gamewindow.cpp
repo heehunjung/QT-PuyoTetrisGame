@@ -8,19 +8,20 @@ GameWindow::GameWindow(QString gamename, QWidget *parent) : QWidget(parent)
     if (GAMENAME == "Puyopuyo")
     {
         p_game = new PuyopuyoGame();
-        p_game->puyopuyoMove(p_game->getPoint1(), p_game->getPoint2(), 0, 0);
+        p_game->move(p_game->points, 0, 0);
         resize(500, 800);
     }
     else if (GAMENAME == "Tetris")
     {
         p_game = new TetrisGame();
-        resize(700, 1100);
+        p_game->move(p_game->points, 0, 0);
+        resize(700, 1000);
     }
-    else if (GAMENAME == "PuyopuyoTetris")
-    {
-        p_game = new PuyopuyoTetrisGame();
-        resize(700, 900);
-    }
+    // else if (GAMENAME == "PuyopuyoTetris")
+    // {
+    //     p_game = new PuyopuyoTetrisGame();
+    //     resize(700, 900);
+    // }
     setWindowTitle(gamename);
 }
 
@@ -259,8 +260,6 @@ void GameWindow::paintEvent(QPaintEvent *event)
 
 void GameWindow::keyPressEvent(QKeyEvent *event)
 {
-    if (p_game->gameover == true)
-        return;
     switch(event->key())
     {
     case Qt::Key_Down:
@@ -286,13 +285,13 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
                 p_game->lastPang();
                 update();
                 drawNext();
-                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                p_game->move(p_game->points, 0, 0);
             }
         }
         else
         {
             int result;
-            result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,1);
+            result=p_game->move(p_game->points, 0, 1);
             if (result == 1)
             {
                 p_game->axis_row++;
@@ -307,7 +306,30 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
                 {
                     update();
                     drawNext();
-                    p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                    if(p_game->points->size()==2)
+                    {
+                        if(p_game->boardInt[2][2]<0) {
+                            p_game->gameover = true;
+                            drawNext();
+                        }
+                    }
+                    else
+                    {
+                        for (int col = 0; col < p_game->COL; ++col) {
+                            if (p_game->boardInt[2][col] < 0) {
+                                p_game->gameover = true;
+                                drawNext();
+                            }
+                        }
+
+                    }
+                    if (p_game->gameover == true)
+                    {
+                        gameoverwindow = new GameoverWindow;
+                        gameoverwindow->show();
+                        return;
+                    }
+                    p_game->move(p_game->points, 0, 0);
                 }
             }
         }
@@ -337,18 +359,27 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
                 p_game->lastPang();
                 update();
                 drawNext();
-                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                p_game->move(p_game->points, 0, 0);
             }
         }
         else
         {
-            if(p_game->getPoint1()->x == 0 || p_game->getPoint2()->x == 0
-                || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x-1] < 0
-                || p_game->boardInt[p_game->getPoint2()->y][p_game->getPoint2()->x-1] < 0 )
-            {break;}
+            Points* points = p_game->points;  // Points 객체 가져오기
+
+            bool conditionMet = false;
+
+            // Points 벡터를 반복하여 조건 검사
+            for (int i = 0; i < points->size(); ++i) {
+                Point* point = points->getPoint(i);
+                if (point->x == 0 || p_game->boardInt[point->y][point->x - 1] < 0) {
+                    conditionMet = true;
+                    break;
+                }
+            }
+            if (conditionMet) {break;}
             int result;
             p_game->isLast = false;
-            result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),-1,0);
+            result=p_game->move(p_game->points, -1, 0);
             if (result == 1)
             {
                 p_game->axis_col--;
@@ -357,6 +388,7 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
             {
                 ;
             }
+
         }
         update();
         break;
@@ -384,24 +416,32 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
                 p_game->lastPang();
                 update();
                 drawNext();
-                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                p_game->move(p_game->points, 0, 0);
             }
         }
         else
         {
-            if(p_game->getPoint1()->x == p_game->COL-1 || p_game->getPoint2()->x == p_game->COL-1
-                || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x+1] < 0
-                || p_game->boardInt[p_game->getPoint2()->y][p_game->getPoint2()->x+1] < 0)
-            {break;}
+            bool conditionMet = false;
+
+            // Points 벡터를 반복하여 조건 검사
+            for (int i = 0; i < p_game->points->size(); ++i) {
+                Point* point = p_game->points->getPoint(i);
+                if (point->x == p_game->COL-1 || p_game->boardInt[point->y][point->x + 1] < 0) {
+                    conditionMet = true;
+                    break;
+                }
+            }
+
+            if (conditionMet) {
+                break;
+            }
+
             int result;
             p_game->isLast = false;
-            result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),1,0);
-            if (result == 1)
-            {
+            result = p_game->move(p_game->points, 1, 0);
+            if (result == 1) {
                 p_game->axis_col++;
-            }
-            else if (result == 3)
-            {
+            } else if (result == 3) {
                 ;
             }
         }
@@ -432,13 +472,13 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
                 p_game->lastPang();
                 update();
                 drawNext();
-                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                p_game->move(p_game->points, 0, 0);
             }
         }
         else
         {
             while (true) {
-                int result = p_game->puyopuyoMove(p_game->getPoint1(), p_game->getPoint2(), 0, 1);
+                int result = p_game->move(p_game->points, 0, 1);
                 if (result == 1) {
                     p_game->axis_row++;
                 } else if (result == 0) {
@@ -450,7 +490,30 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
                     {
                         update();
                         drawNext();
-                        p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                        if(p_game->points->size()==2)
+                        {
+                            if(p_game->boardInt[2][2]<0) {
+                                p_game->gameover = true;
+                                drawNext();
+                            }
+                        }
+                        else
+                        {
+                            for (int col = 0; col < p_game->COL; ++col) {
+                                if (p_game->boardInt[2][col] < 0) {
+                                    p_game->gameover = true;
+                                    drawNext();
+                                }
+                            }
+
+                        }
+                        if (p_game->gameover == true)
+                        {
+                            gameoverwindow = new GameoverWindow;
+                            gameoverwindow->show();
+                            return;
+                        }
+                        p_game->move(p_game->points, 0, 0);
                     }
                     break;  // result가 0이면 루프 종료
                 }
@@ -461,89 +524,164 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
     }
     case Qt::Key_Z:
     {
-        PointPuyopuyo tempP1 = *p_game->getPoint1();
-        PointPuyopuyo tempP2 = *p_game->getPoint2();
+        if(p_game->points->size()==2)
+        {
+            Point tempP1 = *p_game->getPoint1();
+            Point tempP2 = *p_game->getPoint2();
 
-        // 반시계 방향 회전
-        int tempX = tempP2.x - tempP1.x;
-        int tempY = tempP2.y - tempP1.y;
-        tempP2.x = tempP1.x + tempY;
-        tempP2.y = tempP1.y - tempX;
+            // 반시계 방향 회전
+            int tempX = tempP2.x - tempP1.x;
+            int tempY = tempP2.y - tempP1.y;
+            tempP2.x = tempP1.x + tempY;
+            tempP2.y = tempP1.y - tempX;
 
-        PointPuyopuyo p3(tempP2.x, tempP2.y);
-        if (tempP1.x == tempP2.x) {
-            // tempP1과 tempP2가 세로로 위치할 때
-            if (tempP1.y > tempP2.y) {
-                p3.x++;
+            Point p3(tempP2.x, tempP2.y);
+            if (tempP1.x == tempP2.x) {
+                // tempP1과 tempP2가 세로로 위치할 때
+                if (tempP1.y > tempP2.y) {
+                    p3.x++;
+                } else {
+                    p3.x--;
+                }
             } else {
-                p3.x--;
+                // tempP1과 tempP2가 가로로 위치할 때
+                if (tempP1.x > tempP2.x) {
+                    p3.y--;
+                } else {
+                    p3.y++;
+                }
+            }
+
+            if (tempP2.x > p_game->COL-1 || tempP2.x < 0
+                || tempP2.y > p_game->ROW+1 || tempP2.y < 0
+                || p3.x > p_game->COL-1 || p3.x < 0
+                || p3.y > p_game->ROW+1 || p3.y < 0
+                || p_game->boardInt[tempP2.y][tempP2.x] < 0
+                || p_game->boardInt[p3.y][p3.x] < 0)
+            {
+                if( p_game->boardInt[tempP2.y][tempP2.x] < 0
+                    || p_game->boardInt[p3.y][p3.x] < 0)
+                    p_game->isLast = true;
+                break;
             }
         } else {
-            // tempP1과 tempP2가 가로로 위치할 때
-            if (tempP1.x > tempP2.x) {
-                p3.y--;
+            bool outOfBounds = false;
+
+            if (p_game->pastShape == "I") {
+                Point* p2 = p_game->getPoint2(); // p2를 기준으로 5x5 정사각형 검사
+                for (int i = -2; i <= 2; ++i) {
+                    for (int j = -2; j <= 2; ++j) {
+                        int newX = p2->x + j;
+                        int newY = p2->y + i;
+                        if (newX < 0 || newX > p_game->COL - 1 || newY < 0 || newY > p_game->ROW + 1
+                            || p_game->boardInt[newY][newX] < 0) {
+                            outOfBounds = true;
+                            break;
+                        }
+                    }
+                    if (outOfBounds) break;
+                }
             } else {
-                p3.y++;
+                for (int i = -1; i <= 1; ++i) {
+                    for (int j = -1; j <= 1; ++j) {
+                        int newX = p_game->axis_col + j;
+                        int newY = p_game->axis_row + i;
+                        if (newX < 0 || newX > p_game->COL - 1 || newY < 0 || newY > p_game->ROW + 1
+                            || p_game->boardInt[newY][newX] < 0) {
+                            outOfBounds = true;
+                            break;
+                        }
+                    }
+                    if (outOfBounds) break;
+                }
+            }
+
+            if (outOfBounds) {
+                p_game->isLast = true;
+                break;
             }
         }
-
-        if (tempP2.x > p_game->COL-1 || tempP2.x < 0
-            || tempP2.y > p_game->ROW+1 || tempP2.y < 0
-            || p3.x > p_game->COL-1 || p3.x < 0
-            || p3.y > p_game->ROW+1 || p3.y < 0
-            || p_game->boardInt[tempP2.y][tempP2.x] < 0
-            || p_game->boardInt[p3.y][p3.x] < 0)
-        {
-            if( p_game->boardInt[tempP2.y][tempP2.x] < 0
-                || p_game->boardInt[p3.y][p3.x] < 0)
-                p_game->isLast = true;
-            break;
-        }
-
-        p_game->puyopuyoXZ(p_game->getPoint1(), p_game->getPoint2(), 1);
+        p_game->xz(p_game->points, 1);
         update();
         break;
     }
     case Qt::Key_X:
     {
-        PointPuyopuyo tempP1 = *p_game->getPoint1();
-        PointPuyopuyo tempP2 = *p_game->getPoint2();
-        int tempX = tempP2.x - tempP1.x;
-        int tempY = tempP2.y - tempP1.y;
-        tempP2.x = tempP1.x - tempY;
-        tempP2.y = tempP1.y + tempX;
+        if(p_game->points->size()==2){
+            Point tempP1 = *p_game->getPoint1();
+            Point tempP2 = *p_game->getPoint2();
+            int tempX = tempP2.x - tempP1.x;
+            int tempY = tempP2.y - tempP1.y;
+            tempP2.x = tempP1.x - tempY;
+            tempP2.y = tempP1.y + tempX;
 
-        PointPuyopuyo p3(tempP2.x, tempP2.y);
-        if (tempP1.x == tempP2.x) {
-            // tempP1과 tempP2가 세로로 위치할 때
-            if (tempP1.y > tempP2.y) {
-                p3.x--;
+            Point p3(tempP2.x, tempP2.y);
+            if (tempP1.x == tempP2.x) {
+                // tempP1과 tempP2가 세로로 위치할 때
+                if (tempP1.y > tempP2.y) {
+                    p3.x--;
+                } else {
+                    p3.x++;
+                }
             } else {
-                p3.x++;
+                // tempP1과 tempP2가 가로로 위치할 때
+                if (tempP1.x > tempP2.x) {
+                    p3.y++;
+                } else {
+                    p3.y--;
+                }
             }
-        } else {
-            // tempP1과 tempP2가 가로로 위치할 때
-            if (tempP1.x > tempP2.x) {
-                p3.y++;
-            } else {
-                p3.y--;
-            }
-        }
 
-        if (tempP2.x > p_game->COL-1 || tempP2.x < 0
-            || tempP2.y > p_game->ROW+1 || tempP2.y < 0
-            || p3.x > p_game->COL-1 || p3.x < 0
-            || p3.y > p_game->ROW+1 || p3.y < 0
-            || p_game->boardInt[tempP2.y][tempP2.x] < 0
-            || p_game->boardInt[p3.y][p3.x] < 0)
-        {
-            if( p_game->boardInt[tempP2.y][tempP2.x] < 0
+            if (tempP2.x > p_game->COL-1 || tempP2.x < 0
+                || tempP2.y > p_game->ROW+1 || tempP2.y < 0
+                || p3.x > p_game->COL-1 || p3.x < 0
+                || p3.y > p_game->ROW+1 || p3.y < 0
+                || p_game->boardInt[tempP2.y][tempP2.x] < 0
                 || p_game->boardInt[p3.y][p3.x] < 0)
-                p_game->isLast = true;
-            break;
-        }
+            {
+                if( p_game->boardInt[tempP2.y][tempP2.x] < 0
+                    || p_game->boardInt[p3.y][p3.x] < 0)
+                    p_game->isLast = true;
+                break;
+            }
+        }else {
+            bool outOfBounds = false;
 
-        p_game->puyopuyoXZ(p_game->getPoint1(), p_game->getPoint2(), 0);
+            if (p_game->pastShape == "I") {
+                Point* p2 = p_game->getPoint2(); // p2를 기준으로 5x5 정사각형 검사
+                for (int i = -2; i <= 2; ++i) {
+                    for (int j = -2; j <= 2; ++j) {
+                        int newX = p2->x + j;
+                        int newY = p2->y + i;
+                        if (newX < 0 || newX > p_game->COL - 1 || newY < 0 || newY > p_game->ROW + 1
+                            || p_game->boardInt[newY][newX] < 0) {
+                            outOfBounds = true;
+                            break;
+                        }
+                    }
+                    if (outOfBounds) break;
+                }
+            } else {
+                for (int i = -1; i <= 1; ++i) {
+                    for (int j = -1; j <= 1; ++j) {
+                        int newX = p_game->axis_col + j;
+                        int newY = p_game->axis_row + i;
+                        if (newX < 0 || newX > p_game->COL - 1 || newY < 0 || newY > p_game->ROW + 1
+                            || p_game->boardInt[newY][newX] < 0) {
+                            outOfBounds = true;
+                            break;
+                        }
+                    }
+                    if (outOfBounds) break;
+                }
+            }
+
+            if (outOfBounds) {
+                p_game->isLast = true;
+                break;
+            }
+        }
+        p_game->xz(p_game->points, 0);
         update();
         break;
     }
@@ -556,11 +694,14 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
 
 void GameWindow::timerEvent(QTimerEvent* event)
 {
-    if (p_game->gameover == true)
-        return;
-
     if(event->timerId()==timer)
     {
+        if (p_game->gameover == true)
+        {
+            gameoverwindow = new GameoverWindow;
+            gameoverwindow->show();
+            return;
+        }
         if(p_game->bfsState)  //그래비티
         {
             int check =p_game->gravity();
@@ -582,12 +723,12 @@ void GameWindow::timerEvent(QTimerEvent* event)
                 p_game->lastPang();
                 update();
                 drawNext();
-                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                p_game->move(p_game->points,0,0);
             }
         }
         else{                   //타이머
             int result;
-            result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,1);
+            result= p_game->move(p_game->points,0,1);
             if (result == 1)
             {
                 p_game->axis_row++;
@@ -602,7 +743,31 @@ void GameWindow::timerEvent(QTimerEvent* event)
                 {
                     update();
                     drawNext();
-                    p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                    if(p_game->points->size()==2)
+                    {
+                        if(p_game->boardInt[2][2]<0) {
+                            p_game->gameover = true;
+                            drawNext();
+                        }
+                    }
+                    else
+                    {
+                        for (int col = 0; col < p_game->COL; ++col) {
+                            if (p_game->boardInt[2][col] < 0) {
+                                p_game->gameover = true;
+                                drawNext();
+                            }
+                        }
+
+                    }
+                    if (p_game->gameover == true)
+                    {
+                        gameoverwindow = new GameoverWindow;
+                        gameoverwindow->show();
+                        return;
+                    }
+                    p_game->move(p_game->points,0,0);
+
                 }
             }
         }

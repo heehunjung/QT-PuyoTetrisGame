@@ -1,10 +1,9 @@
 #ifndef GAMES_H
 #define GAMES_H
-#include "puyopuyo.h"
+#include "element.h"
 #include <string>
 #include <QDebug>
 #include <queue>
-
 using namespace std;
 class Game
 {
@@ -26,46 +25,59 @@ public:
     bool isLast;
     bool bfsState;
     bool initPuyo;
+    bool moved = false;
+    string pastShape;
     string** board;
     string* next;
     int** boardInt;
-    bool moved = false;  // 뿌요가 이동했는지 추적
-    virtual int puyopuyoMove(PointPuyopuyo*, PointPuyopuyo*, int, int){};
-    virtual void puyopuyoXZ(PointPuyopuyo*, PointPuyopuyo*, int){;};
-    virtual PointPuyopuyo* getPoint1(){};
-    virtual PointPuyopuyo* getPoint2(){};
-    virtual int bfs(){;};
-    void rotateClockwise(PointPuyopuyo* p1, PointPuyopuyo* p2, PointPuyopuyo pivot) {
-        // 중심(pivot)을 기준으로 시계방향 회전
-        int tempX = p2->x - pivot.x;
-        int tempY = p2->y - pivot.y;
-        p2->x = pivot.x - tempY;
-        p2->y = pivot.y + tempX;
+    Points* points;
+    // 통합된 가상 메서드
+    virtual int move(Points*, int, int) = 0;
+    virtual void xz(Points*, int) = 0;
+
+    virtual Point* getPoint1() = 0;
+    virtual Point* getPoint2() = 0;
+    virtual Point* getPoint3() = 0;
+    virtual Point* getPoint4() = 0;
+    virtual int bfs() = 0;
+    virtual int gravity() = 0;
+    virtual void lastPang() = 0;
+
+    void rotateClockwise(Points* points,Point* pivot) {
+        for (int i = 0; i < points->size(); ++i) {
+            Point* p = points->getPoint(i);
+            double tempX = (double)p->x -pivot->x;
+            double tempY = (double)p->y - pivot->y;
+            p->x = pivot->x - tempY;
+            p->y = pivot->y + tempX;
+        }
     }
-    void rotateCounterClockwise(PointPuyopuyo* p1, PointPuyopuyo* p2, PointPuyopuyo pivot) {
-        // 중심(pivot)을 기준으로 시계 반대 방향 회전
-        int tempX = p2->x - pivot.x;
-        int tempY = p2->y - pivot.y;
-        p2->x = pivot.x + tempY;
-        p2->y = pivot.y - tempX;
+
+    void rotateCounterClockwise(Points* points,Point* pivot) {
+        for (int i = 0; i < points->size(); ++i) {
+            Point* p = points->getPoint(i);
+            double tempX = (double)p->x -pivot->x;
+            double tempY = (double)p->y - pivot->y;
+            p->x = pivot->x + tempY;
+            p->y = pivot->y - tempX;
+        }
     }
-    virtual int gravity(){};
-    virtual void lastPang(){};
 };
 
 class PuyopuyoGame : public Game
 {
 public:
-    PointPuyopuyo *p1;
-    PointPuyopuyo *p2;
-    virtual int puyopuyoMove(PointPuyopuyo*,PointPuyopuyo*,int,int);
-    virtual void puyopuyoXZ(PointPuyopuyo*, PointPuyopuyo*, int);
-    virtual int gravity();
-    virtual PointPuyopuyo* getPoint1(){return p1;}
-    virtual PointPuyopuyo* getPoint2(){return p2;}
-    virtual int bfs();
-    virtual void lastPang();
-
+    Point *p1;
+    Point *p2;
+    virtual int move(Points*, int, int) override;
+    virtual void xz(Points*, int) override;
+    virtual Point* getPoint1() override { return p1; }
+    virtual Point* getPoint2() override { return p2; }
+    virtual Point* getPoint3() override { return nullptr; }
+    virtual Point* getPoint4() override { return nullptr; }
+    virtual int bfs() override;
+    virtual int gravity() override;
+    virtual void lastPang() override;
     PuyopuyoGame();
     ~PuyopuyoGame();
 };
@@ -73,6 +85,19 @@ public:
 class TetrisGame : public Game
 {
 public:
+    Point *p1;
+    Point *p2;
+    Point *p3;
+    Point *p4;
+    virtual int move(Points*, int, int) override;
+    virtual void xz(Points*, int) override;
+    virtual Point* getPoint1() override { return p1; }
+    virtual Point* getPoint2() override { return p2; }
+    virtual Point* getPoint3() override { return nullptr; }
+    virtual Point* getPoint4() override { return nullptr; }
+    virtual int bfs() override;
+    virtual int gravity() override;
+    virtual void lastPang() override;
     TetrisGame();
     ~TetrisGame();
 };
@@ -80,6 +105,19 @@ public:
 class PuyopuyoTetrisGame : public Game
 {
 public:
+    Point *p1;
+    Point *p2;
+    Point *p3;
+    Point *p4;
+    virtual int move(Points*, int, int) override;
+    virtual void xz(Points*, int) override;
+    virtual Point* getPoint1() override { return p1; }
+    virtual Point* getPoint2() override { return p2; }
+    virtual Point* getPoint3() override { return nullptr; }
+    virtual Point* getPoint4() override { return nullptr; }
+    virtual int bfs() override;
+    virtual int gravity() override;
+    virtual void lastPang() override;
     PuyopuyoTetrisGame();
     ~PuyopuyoTetrisGame();
 };

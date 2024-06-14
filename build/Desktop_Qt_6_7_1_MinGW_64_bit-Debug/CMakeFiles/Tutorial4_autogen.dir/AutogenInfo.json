@@ -255,6 +255,12 @@
 	"HEADERS" : 
 	[
 		[
+			"C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/element.h",
+			"MU",
+			"EWIEGA46WW/moc_element.cpp",
+			null
+		],
+		[
 			"C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gameoverwindow.h",
 			"MU",
 			"EWIEGA46WW/moc_gameoverwindow.cpp",
@@ -276,12 +282,6 @@
 			"C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/mainwindow.h",
 			"MU",
 			"EWIEGA46WW/moc_mainwindow.cpp",
-			null
-		],
-		[
-			"C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/puyopuyo.h",
-			"MU",
-			"EWIEGA46WW/moc_puyopuyo.cpp",
 			null
 		]
 	],

@@ -1139,8 +1139,8 @@ C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gamewindow.h
  mdp:C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gameoverwindow.h
  mdp:C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/games.h
  mdp:C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/build/Desktop_Qt_6_7_1_MinGW_64_bit-Debug/Tutorial4_autogen/moc_predefs.h
+ mdp:C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/element.h
  mdp:C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gamewindow.h
- mdp:C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/puyopuyo.h
 C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gameoverwindow.cpp
 C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/games.cpp
 C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gamewindow.cpp
@@ -1148,3 +1148,4 @@ C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/mainwindow.cpp
  uic:./ui_mainwindow.h
 C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/Board.h
 C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/puyopuyo.h
+C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/element.h

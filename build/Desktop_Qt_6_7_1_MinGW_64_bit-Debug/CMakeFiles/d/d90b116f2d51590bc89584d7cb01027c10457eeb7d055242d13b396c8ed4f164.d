@@ -577,6 +577,7 @@ Tutorial4_autogen/timestamp: \
   CMakeFiles/3.27.7/CMakeRCCompiler.cmake \
   CMakeFiles/3.27.7/CMakeSystem.cmake \
   Tutorial4_autogen/moc_predefs.h \
+  C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/element.h \
   C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gameoverwindow.cpp \
   C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/gameoverwindow.h \
   C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/games.cpp \
@@ -586,5 +587,4 @@ Tutorial4_autogen/timestamp: \
   C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/main.cpp \
   C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/mainwindow.cpp \
   C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/mainwindow.h \
-  C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/mainwindow.ui \
-  C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/puyopuyo.h
+  C:/Users/jungheehun/Desktop/oop-proj/Tutorial4/mainwindow.ui
