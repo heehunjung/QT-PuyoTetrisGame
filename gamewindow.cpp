@@ -265,11 +265,32 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Down:
     {
-        if(p_game->moved==true)
+        if(p_game->bfsState)  //그래비티
         {
-            p_game->gravity();
+            int check =p_game->gravity();
+            update();
+            if(check ==1)
+            {
+                p_game->bfs();
+                update();
+                check =p_game->gravity();
+                if(check == 0)
+                {
+                    p_game->bfsState = true;
+                    update();
+                    return;
+                }
+                else{
+                    p_game->bfsState = false;
+                }
+                p_game->lastPang();
+                update();
+                drawNext();
+                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+            }
         }
-        else{
+        else
+        {
             int result;
             result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,1);
             if (result == 1)
@@ -280,10 +301,10 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
             {
                 update();
                 int check = p_game->bfs();
+                update();
                 p_game->lastPang();
-                if(check == 0 && !p_game->moved )
+                if(check == 0 )
                 {
-                    p_game->bfsState=false;
                     update();
                     drawNext();
                     p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
@@ -295,48 +316,147 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
     }
     case Qt::Key_Left:
     {
-        if(p_game->getPoint1()->x == 0 || p_game->getPoint2()->x == 0
-            || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x-1] < 0
-            || p_game->boardInt[p_game->getPoint2()->y][p_game->getPoint2()->x-1] < 0 )
-        {break;}
-        int result;
-        p_game->isLast = false;
-        result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),-1,0);
-        if (result == 1)
+        if(p_game->bfsState)  //그래비티
         {
-            p_game->axis_col--;
+            int check =p_game->gravity();
+            update();
+            if(check ==1)
+            {
+                p_game->bfs();
+                update();
+                check =p_game->gravity();
+                if(check == 0)
+                {
+                    p_game->bfsState = true;
+                    update();
+                    return;
+                }
+                else{
+                    p_game->bfsState = false;
+                }
+                p_game->lastPang();
+                update();
+                drawNext();
+                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+            }
         }
-        else if (result == 3)
+        else
         {
-            ;
+            if(p_game->getPoint1()->x == 0 || p_game->getPoint2()->x == 0
+                || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x-1] < 0
+                || p_game->boardInt[p_game->getPoint2()->y][p_game->getPoint2()->x-1] < 0 )
+            {break;}
+            int result;
+            p_game->isLast = false;
+            result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),-1,0);
+            if (result == 1)
+            {
+                p_game->axis_col--;
+            }
+            else if (result == 3)
+            {
+                ;
+            }
         }
         update();
         break;
     }
     case Qt::Key_Right:
     {
-        if(p_game->getPoint1()->x == p_game->COL-1 || p_game->getPoint2()->x == p_game->COL-1
-            || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x+1] < 0
-            || p_game->boardInt[p_game->getPoint2()->y][p_game->getPoint2()->x+1] < 0)
-        {break;}
-        int result;
-        p_game->isLast = false;
-        result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),1,0);
-        if (result == 1)
+        if(p_game->bfsState)  //그래비티
         {
-            p_game->axis_col++;
+            int check =p_game->gravity();
+            update();
+            if(check ==1)
+            {
+                p_game->bfs();
+                update();
+                check =p_game->gravity();
+                if(check == 0)
+                {
+                    p_game->bfsState = true;
+                    update();
+                    return;
+                }
+                else{
+                    p_game->bfsState = false;
+                }
+                p_game->lastPang();
+                update();
+                drawNext();
+                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+            }
         }
-        else if (result == 3)
+        else
         {
-            ;
+            if(p_game->getPoint1()->x == p_game->COL-1 || p_game->getPoint2()->x == p_game->COL-1
+                || p_game->boardInt[p_game->getPoint1()->y][p_game->getPoint1()->x+1] < 0
+                || p_game->boardInt[p_game->getPoint2()->y][p_game->getPoint2()->x+1] < 0)
+            {break;}
+            int result;
+            p_game->isLast = false;
+            result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),1,0);
+            if (result == 1)
+            {
+                p_game->axis_col++;
+            }
+            else if (result == 3)
+            {
+                ;
+            }
         }
         update();
         break;
+\
     }
     case Qt::Key_Space:
     {
-        gameoverwindow = new GameoverWindow;
-        gameoverwindow->show();
+        if(p_game->bfsState)  //그래비티
+        {
+            int check =p_game->gravity();
+            update();
+            if(check ==1)
+            {
+                p_game->bfs();
+                update();
+                check =p_game->gravity();
+                if(check == 0)
+                {
+                    p_game->bfsState = true;
+                    update();
+                    return;
+                }
+                else{
+                    p_game->bfsState = false;
+                }
+                p_game->lastPang();
+                update();
+                drawNext();
+                p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+            }
+        }
+        else
+        {
+            while (true) {
+                int result = p_game->puyopuyoMove(p_game->getPoint1(), p_game->getPoint2(), 0, 1);
+                if (result == 1) {
+                    p_game->axis_row++;
+                } else if (result == 0) {
+                    update();
+                    int check = p_game->bfs();
+                    update();
+                    p_game->lastPang();
+                    if(check == 0 )
+                    {
+                        update();
+                        drawNext();
+                        p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
+                    }
+                    break;  // result가 0이면 루프 종료
+                }
+            }
+        }
+        update();
         break;
     }
     case Qt::Key_Z:
@@ -441,24 +561,31 @@ void GameWindow::timerEvent(QTimerEvent* event)
 
     if(event->timerId()==timer)
     {
-        update();
-        p_game->bfs();
-        if(p_game->bfsState)
+        if(p_game->bfsState)  //그래비티
         {
             int check =p_game->gravity();
             update();
             if(check ==1)
             {
-                p_game->bfsState=false;
                 p_game->bfs();
                 update();
+                check =p_game->gravity();
+                if(check == 0)
+                {
+                    p_game->bfsState = true;
+                    update();
+                    return;
+                }
+                else{
+                    p_game->bfsState = false;
+                }
                 p_game->lastPang();
                 update();
                 drawNext();
                 p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
             }
         }
-        else{
+        else{                   //타이머
             int result;
             result= p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,1);
             if (result == 1)
@@ -469,16 +596,17 @@ void GameWindow::timerEvent(QTimerEvent* event)
             {
                 update();
                 int check = p_game->bfs();
+                update();
                 p_game->lastPang();
-                if(check == 0 && !p_game->moved )
+                if(check == 0 )
                 {
-                    p_game->bfsState=false;
                     update();
                     drawNext();
                     p_game->puyopuyoMove(p_game->getPoint1(),p_game->getPoint2(),0,0);
                 }
             }
         }
+        update();
     }
 }
 
@@ -556,5 +684,4 @@ void GameWindow::drawNext()
             }
         }
     }
-    (p_game->score)++;
 }

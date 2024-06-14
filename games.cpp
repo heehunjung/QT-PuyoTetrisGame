@@ -111,6 +111,7 @@ int PuyopuyoGame::puyopuyoMove(PointPuyopuyo* p1, PointPuyopuyo* p2, int xPlus, 
                 boardInt[p2->y-1][p2->x] = block2->afterValue;
                 delete block2;
             }
+            initPuyo =false;
             delete p1;
             delete p2;
             return 0;
@@ -128,6 +129,7 @@ int PuyopuyoGame::puyopuyoMove(PointPuyopuyo* p1, PointPuyopuyo* p2, int xPlus, 
             boardInt[p2->y-1][p2->x] = block2->afterValue;
             delete block2;
         }
+        initPuyo =false;
         delete p1;
         delete p2;
         return 0;
@@ -149,13 +151,18 @@ void PuyopuyoGame::lastPang(){
     axis_col = 2;
     this->p1 = new PointPuyopuyo(axis_col, axis_row);
     this->p2 = new PointPuyopuyo(axis_col, axis_row - 1);
+    initPuyo = true;
 }
 void PuyopuyoGame::puyopuyoXZ(PointPuyopuyo* p1, PointPuyopuyo* p2, int check)
 {
 
     // 기존 위치 초기화
-    board[p2->y][p2->x] = "White";
+
+    if( p2->y <2)  board[p2->y][p2->x] = "Gray";
+    else board[p2->y][p2->x] = "White";
+
     boardInt[p2->y][p2->x] = 0;
+\
     // 블록 초기화
     Board* block2 = nullptr;
 
@@ -257,12 +264,18 @@ int PuyopuyoGame::bfs() {
                 board[i][k] = "White";
                 boardInt[i][k] = 0;
                 check = 1;
-                bfsState = true;
             }
         }
     }
-    if(check == 1){return 1;}
-    else return 0;
+    if(check == 1){
+        score++;
+        bfsState = true;
+        return 1;
+    }
+    else{
+        bfsState = false;
+        return 0;
+    }
 }
 
 int PuyopuyoGame::gravity() {
@@ -285,9 +298,7 @@ int PuyopuyoGame::gravity() {
     // row가 0과 1일 때는 이동하지 않아도 1을 반환
     for (int col = 0; col < COL; col++) {
         if ((boardInt[0][col] > 0 || boardInt[1][col] > 0)) {
-            moved=false;
             return 0;
-
         }
     }
     if (moved) {
@@ -302,7 +313,8 @@ PuyopuyoGame::PuyopuyoGame() : Game(12, 6, 2)
     // Initialize random seed
     srand(time(0));
     isLast = false;
-
+    bfsState = false;
+    initPuyo = true;
     // Generate random colors for next blocks
     for(int i = 0; i < 2; ++i)
     {

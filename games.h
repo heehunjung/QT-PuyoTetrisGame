@@ -25,6 +25,7 @@ public:
     bool gameover;
     bool isLast;
     bool bfsState;
+    bool initPuyo;
     string** board;
     string* next;
     int** boardInt;
